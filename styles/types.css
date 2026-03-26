@@ -1,0 +1,105 @@
+.type-normal {
+  background: #a8a77a;
+}
+
+.type-fire {
+  background: #ee8130;
+}
+
+.type-water {
+  background: #6390f0;
+}
+
+.type-electric {
+  background: #f7d02c;
+  color: #1e293b;
+}
+
+.type-grass {
+  background: #7ac74c;
+}
+
+.type-ice {
+  background: #96d9d6;
+  color: #1e293b;
+}
+
+.type-fighting {
+  background: #c22e28;
+}
+
+.type-poison {
+  background: #a33ea1;
+}
+
+.type-ground {
+  background: #e2bf65;
+  color: #1e293b;
+}
+
+.type-flying {
+  background: #a98ff3;
+}
+
+.type-psychic {
+  background: #f95587;
+}
+
+.type-bug {
+  background: #a6b91a;
+}
+
+.type-rock {
+  background: #b6a136;
+}
+
+.type-ghost {
+  background: #735797;
+}
+
+.type-dragon {
+  background: #6f35fc;
+}
+
+.type-dark {
+  background: #705746;
+}
+
+.type-steel {
+  background: #b7b7ce;
+  color: #1e293b;
+}
+
+.type-fairy {
+  background: #d685ad;
+}
+
+.pokemon-card.type-fire:hover {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(238, 129, 48, 0.22);
+}
+
+.pokemon-card.type-water:hover {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(99, 144, 240, 0.22);
+}
+
+.pokemon-card.type-grass:hover {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(122, 199, 76, 0.22);
+}
+
+.pokemon-card.type-electric:hover {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(247, 208, 44, 0.22);
+}
+
+.pokemon-card.type-psychic:hover {
+  box-shadow:
+    0 20px 40px rgba(0, 0, 0, 0.28),
+    0 0 30px rgba(249, 85, 135, 0.22);
+}

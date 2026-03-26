@@ -1,0 +1,44 @@
+<!DOCTYPE html>
+<html lang="de">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Pokedex</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="styles/header.css">
+    <link rel="stylesheet" href="styles/overview.css">
+    <link rel="stylesheet" href="styles/cards.css">
+    <link rel="stylesheet" href="styles/types.css">
+
+    <script src="scripts/template.js"></script>
+    <script src="script.js"></script>
+</head>
+<body onload="init()">
+     <header class="pokedex-header">
+    <div>
+      <h1 class="pokedex-title">Pokédex</h1>
+      <p class="pokedex-subtitle">Finde dein Lieblings-Pokémon</p>
+    </div>
+
+    <div class="controls">
+      <div class="search-box">
+        <input class="search-input" type="text" placeholder="Pokémon suchen...">
+      </div>
+
+      <div class="filter-box">
+        <select class="filter-select">
+          <option>Alle Typen</option>
+          <option>Fire</option>
+          <option>Water</option>
+          <option>Grass</option>
+          <option>Electric</option>
+        </select>
+      </div>
+    </div>
+  </header>
+    <main class="content">
+        <section id="pokemon-names-container" class="pokemon-cards-wrapper"></section>
+        <button id="next-btn">Lade nächtste Pokemon</button>
+    </main>
+</body>
+</html>
