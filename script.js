@@ -37,7 +37,9 @@ async function renderPokemonNames(url) {
         if (!pokemonData) continue;
 
         const pokemonName = capitalize(pokemonData.name);
-        pokemonNamesConRef.innerHTML += pokemonNameTemplate(pokemonName, pokemonData);
+        const typeData = await getPokemonTypeData(pokemonData);
+
+        pokemonNamesConRef.innerHTML += pokemonNameTemplate(pokemonName, pokemonData, typeData);
     }
 }
 
@@ -64,13 +66,45 @@ function capitalize(word) {
     return word.charAt(0).toUpperCase() + word.slice(1);
 }
 
-function getPokemonType(pokemon) {
-    const typeNames = [];
+async function getPokemonTypeData(pokemon) {
+    let typeNames = [];
+    let typeIcons = [];
 
     for (let index = 0; index < pokemon.types.length; index++) {
-        const type = pokemon.types[index].type.name;
-        typeNames.push(type);
+        const typeName = pokemon.types[index].type.name;
+        typeNames.push(typeName);
+
+        const typeUrl = pokemon.types[index].type.url;
+        const typeData = await loadPokemonData(typeUrl);
+
+        const icon = typeData?.sprites?.["generation-viii"]?.["sword-shield"]?.symbol_icon;
+        typeIcons.push(icon);
     }
 
-    return typeNames;
+    return {
+        typeNames,
+        typeIcons
+    };
+}
+
+function renderTypeIcons(typeIcons, typeNames) {
+    let html = "";
+
+    for (let i = 0; i < typeIcons.length; i++) {
+        if (typeIcons[i]) {
+            html += `<img class="type-icon" src="${typeIcons[i]}" alt="${typeNames[i]}">`;
+        }
+    }
+
+    return html;
+}
+
+function renderTypeNames(typeNames) {
+    let html = "";
+
+    for (let i = 0; i < typeNames.length; i++) {
+        html += `<span class="type-badge type-${typeNames[i]}">${capitalize(typeNames[i])}</span>`;
+    }
+
+    return html;
 }
