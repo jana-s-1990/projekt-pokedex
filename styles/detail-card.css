@@ -1,0 +1,190 @@
+.overlay {
+  position: fixed;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.65);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 24px;
+  z-index: 999;
+}
+
+.overlay-content {
+  position: relative;
+  width: 100%;
+  max-width: 500px;
+  max-height: 90vh;
+  overflow-y: auto;
+  background: white;
+  border-radius: 24px;
+  padding: 24px;
+}
+
+.close-btn {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  border: none;
+  background: transparent;
+  font-size: 24px;
+  cursor: pointer;
+}
+
+.pokemon-detail {
+  border-radius: 20px;
+  padding: 20px;
+  color: white;
+}
+
+.detail-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  gap: 16px;
+}
+
+.detail-image-wrap {
+  display: flex;
+  justify-content: center;
+  margin: 24px 0;
+}
+
+.detail-image {
+  width: 220px;
+  height: 220px;
+  object-fit: contain;
+}
+
+.detail-types {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+
+.detail-stats p {
+  margin: 8px 0;
+}
+
+.d-none {
+  display: none;
+}
+
+.detail-navigation {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  margin-top: 24px;
+}
+
+.nav-btn {
+  border: none;
+  padding: 12px 18px;
+  border-radius: 12px;
+  cursor: pointer;
+  font-size: 16px;
+  font-weight: 600;
+}
+
+.nav-btn:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.tabs {
+  display: flex;
+  justify-content: space-around;
+  margin: 20px 0;
+}
+
+.tab-btn {
+  border: none;
+  background: transparent;
+  padding: 10px;
+  cursor: pointer;
+  font-weight: 600;
+  opacity: 0.6;
+}
+
+.tab-btn.active {
+  opacity: 1;
+  border-bottom: 2px solid white;
+}
+
+.tab-content {
+  margin-top: 16px;
+}
+
+.tab-pane {
+  display: none;
+}
+
+.tab-pane.active {
+  display: block;
+}
+
+.stat-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin: 8px 0;
+}
+
+.stat-name {
+  width: 100px;
+  font-size: 12px;
+}
+
+.stat-bar {
+  flex: 1;
+  height: 8px;
+  background: rgba(255,255,255,0.2);
+  border-radius: 10px;
+  overflow: hidden;
+}
+
+.stat-fill {
+  height: 100%;
+  background: white;
+}
+
+.stat-value {
+  width: 30px;
+  text-align: right;
+}
+
+.moves-list {
+  list-style: none;
+  padding: 0;
+}
+
+.moves-list li {
+  padding: 6px 0;
+  border-bottom: 1px solid rgba(255,255,255,0.2);
+}
+
+.stat-fill {
+  height: 100%;
+  border-radius: 10px;
+  transition: width 0.3s ease;
+}
+
+.stat-low {
+  background: #e74c3c;
+}
+
+.stat-medium {
+  background: #f39c12;
+}
+
+.stat-good {
+  background: #f1c40f;
+}
+
+.stat-very-good {
+  background: #2ecc71;
+}
+
+.stat-excellent {
+  background: #27ae60;
+}
