@@ -1,26 +1,16 @@
-function pokemonOverviewTemplate(pokemonName, pokemonId, pokemon, firstType, typeIconsHtml, typeNamesHtml) {
-  const pokemonTypes = pokemon.types.map((type) => type.type.name).join(",");
-
+function pokemonOverviewTemplate(pokemonName, pokemonId, pokemon, firstType, typeIconsHtml, typeNamesHtml, pokemonTypes) {
   return /*html*/ `
-    <article 
-      class="pokemon-card type-${firstType}" 
-      data-name="${pokemon.name.toLowerCase()}"
-      data-id="${pokemon.id}"
-      data-types="${pokemonTypes}"
-      onclick="renderOverlay(${pokemon.id})"
-    >
+    <article class="pokemon-card type-${firstType}" data-name="${pokemon.name.toLowerCase()}" data-id="${pokemon.id}" data-types="${pokemonTypes}" onclick="renderOverlay(${pokemon.id})">
       <div class="card-top">
         <span class="pokemon-number">#${pokemonId}</span>
         <div class="type-icons">
           ${typeIconsHtml}
         </div>
       </div>
-
       <div class="card-image-wrap">
         <img class="card-image static" src="${pokemon.sprites.other.home.front_default}" alt="${pokemonName}">
         <img class="card-image animated" src="${pokemon.sprites.other.showdown.front_default}" alt="${pokemonName}">
       </div>
-
       <div class="card-content">
         <h2 class="pokemon-name">${pokemonName}</h2>
         <div class="type-list">
@@ -50,19 +40,59 @@ function noPokemonFoundTemplate(searchValue) {
         <div class="pokedex-screen-header">
           <span class="pokedex-status">STATUS: NO DATA</span>
         </div>
-
         <div class="pokedex-body">
           <h2>No Entry Found</h2>
           <p>Filter input: <strong>${searchValue}</strong></p>
           <p>No matching Pokémon has been registered in this Pokédex.</p>
         </div>
-
         <div class="pokedex-footer">
           <span>Try another search or type filter.</span>
         </div>
       </div>
     </div>
   `;
+}
+
+function searchAllTypesOptionTemplate() {
+  return `
+    <button class="type-filter-option active-option" type="button" data-value="all">
+      <span>All Pokémon Types</span>
+    </button>
+  `;
+}
+
+function searchSingleTypeOptionTemplate(type) {
+  return `
+    <button class="type-filter-option" type="button" data-value="${type.name}">
+      ${searchTypeIconTemplate(type)}
+      <span>${capitalize(type.name)}</span>
+    </button>
+  `;
+}
+
+function searchTypeIconTemplate(type) {
+  if (!type.icon) return "";
+  return `<img class="type-filter-icon" src="${type.icon}" alt="${type.name}">`;
+}
+
+function searchDefaultTypeFilterTriggerTemplate() {
+  return `
+    <span class="type-filter-label">All Pokémon Types</span>
+    ${searchTypeFilterArrowTemplate()}
+  `;
+}
+
+function searchSelectedTypeFilterTriggerTemplate(selectedOptionHTML) {
+  return `
+    <span class="type-filter-selected">
+      ${selectedOptionHTML}
+    </span>
+    ${searchTypeFilterArrowTemplate()}
+  `;
+}
+
+function searchTypeFilterArrowTemplate() {
+  return `<span class="type-filter-arrow">⌄</span>`;
 }
 
 function pokemonDetailTemplate(pokemon, pokemonName, firstType, typeNamesHtml, pokemonIdFormated) {
@@ -73,13 +103,10 @@ function pokemonDetailTemplate(pokemon, pokemonName, firstType, typeNamesHtml, p
             <span class="pokemon-number">#${pokemonIdFormated}</span>
             <button class="close-btn" onclick="closeOverlay()">✕</button>
         </div>
-
         <h2 class="pokemon-name-detail">${pokemonName}</h2>
-
         <div class="detail-types">
             ${typeNamesHtml}
         </div>
-
         <div class="detail-image-wrap">
             <img class="detail-image" src="${pokemon.sprites.other.showdown.front_default}" alt="${pokemonName}">
         </div>
@@ -96,19 +123,19 @@ function pokemonDetailTemplate(pokemon, pokemonName, firstType, typeNamesHtml, p
         <div id="about" class="tab-pane active">
           ${renderAboutTab(pokemon)}
         </div>
-
         <div id="stats" class="tab-pane">
           ${renderStatsTab(pokemon)}
         </div>
-
         <div id="moves" class="tab-pane">
           <ul class="moves-list">
             ${renderMovesTab(pokemon)}
           </ul>
         </div>
-
         <div id="evolution" class="tab-pane">
-          ${renderEvolutionTab()}
+          <div class="evolution-content">
+            <div id="evolution-content" class="evolution-chain">
+            </div>  
+          </div>  
         </div>
       </div>
 
@@ -146,4 +173,20 @@ function detailMovesTabTemplate(moveNameFormated){
     return /*html*/`
         <li>${moveNameFormated}</li>
     `;
+}
+
+function detailNoEvolutionLoadTemplate(){
+  return /*html*/`
+    <p>Entwicklung konnte nicht geladen werden.</p>
+  `;
+}
+
+function detailEvolutionTabTemplate(pokemonData, pokemonName, isCurrentPokemon){
+  return /*html*/`
+    <div class="evolution-card ${isCurrentPokemon ? "active-evolution" : ""}">
+      <img class="evolution-image" src="${pokemonData.sprites.other.home.front_default}" alt="${pokemonName}">
+      <span class="evolution-name">${pokemonName}</span>
+      <span class="evolution-id">#${String(pokemonData.id).padStart(3, "0")}</span>
+    </div>
+  `;
 }

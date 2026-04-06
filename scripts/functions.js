@@ -18,7 +18,6 @@ async function loadPokemonData(url) {
 function handleLoadMoreButton() {
   const nextBtn = document.getElementById("next-btn");
   if (!nextBtn) return;
-
   if (loadedPokemonCount >= POKEMON_LIMIT) {
     nextBtn.disabled = true;
     nextBtn.innerText = "All 150 Pokémon loaded";
@@ -41,78 +40,118 @@ function hideLoadingOverlay() {
 }
 
 function applyFilters() {
-  const searchValue = document.querySelector(".search-input").value.toLowerCase().trim();
-  const selectedType = document.getElementById("type-filter-trigger").dataset.value;
-  const nextBtn = document.getElementById("next-btn");
-  const allCards = document.querySelectorAll(".pokemon-card");
-  const searchStatusRef = document.getElementById("search-status");
-
-  searchStatusRef.innerHTML = "";
-
-  const isSearchActive = searchValue.length > 0;
-  const isTypeFilterActive = selectedType !== "all";
-
-  if (!isSearchActive && !isTypeFilterActive) {
-    allCards.forEach((card) => {
-      card.style.display = "flex";
-    });
-
-    nextBtn.style.display = "block";
+  const filterData = getFilterData();
+  const hasMatch = filterPokemonCards(filterData);
+  resetSearchStatus(filterData.searchStatusRef);
+  if (noFilterActive(filterData)) {
+    showAllPokemonCards(filterData.allCards);
+    showNextButton(filterData.nextBtn);
     return;
   }
+  hideNextButton(filterData.nextBtn);
+  if (!hasMatch) {
+    renderNoPokemonFound(filterData);
+  }
+  updateNavigationButtons();
+}
 
-  nextBtn.style.display = "none";
+function getFilterData() {
+  const searchValue = getSearchValue();
+  const selectedType = getSelectedType();
+  return {
+    searchValue,
+    selectedType,
+    nextBtn: document.getElementById("next-btn"),
+    allCards: document.querySelectorAll(".pokemon-card"),
+    searchStatusRef: document.getElementById("search-status"),
+    isSearchActive: searchValue.length > 0,
+    isTypeFilterActive: selectedType !== "all",
+  };
+}
 
-  let hasMatch = false;
+function getSearchValue() {
+  return document.querySelector(".search-input").value.toLowerCase().trim();
+}
 
+function getSelectedType() {
+  return document.getElementById("type-filter-trigger").dataset.value;
+}
+
+function resetSearchStatus(searchStatusRef) {
+  searchStatusRef.innerHTML = "";
+}
+
+function noFilterActive(filterData) {
+  return !filterData.isSearchActive && !filterData.isTypeFilterActive;
+}
+
+function showAllPokemonCards(allCards) {
   allCards.forEach((card) => {
-    const pokemonName = card.dataset.name;
-    const pokemonId = card.dataset.id;
-    const formattedId = pokemonId.padStart(3, "0");
-    const pokemonTypes = card.dataset.types.split(",");
+    card.style.display = "flex";
+  });
+}
 
-    const matchesSearch =
-      !isSearchActive ||
-      pokemonName.includes(searchValue) ||
-      pokemonId.includes(searchValue) ||
-      formattedId.includes(searchValue);
+function showNextButton(nextBtn) {
+  nextBtn.style.display = "block";
+}
 
-    const matchesType =
-      !isTypeFilterActive ||
-      pokemonTypes.includes(selectedType);
+function hideNextButton(nextBtn) {
+  nextBtn.style.display = "none";
+}
 
-    if (matchesSearch && matchesType) {
+function filterPokemonCards(filterData) {
+  let hasMatch = false;
+  filterData.allCards.forEach((card) => {
+    const matches = matchesCard(card, filterData);
+    if (matches) {
       card.style.display = "flex";
       hasMatch = true;
     } else {
       card.style.display = "none";
     }
   });
+  return hasMatch;
+}
 
-  if (!hasMatch) {
-    const infoText = searchValue || capitalize(selectedType);
-    searchStatusRef.innerHTML = noPokemonFoundTemplate(infoText);
-  }
-  updateNavigationButtons();
+function matchesCard(card, filterData) {
+  return matchesSearch(card, filterData) && matchesType(card, filterData);
+}
+
+function matchesSearch(card, filterData) {
+  if (!filterData.isSearchActive) return true;
+  const pokemonName = card.dataset.name;
+  const pokemonId = card.dataset.id;
+  const formattedId = pokemonId.padStart(3, "0");
+  return (
+    pokemonName.includes(filterData.searchValue) ||
+    pokemonId.includes(filterData.searchValue) ||
+    formattedId.includes(filterData.searchValue)
+  );
+}
+
+function matchesType(card, filterData) {
+  if (!filterData.isTypeFilterActive) return true;
+  const pokemonTypes = card.dataset.types.split(",");
+  return pokemonTypes.includes(filterData.selectedType);
+}
+
+function renderNoPokemonFound(filterData) {
+  const infoText = filterData.searchValue || capitalize(filterData.selectedType);
+  filterData.searchStatusRef.innerHTML = noPokemonFoundTemplate(infoText);
 }
 
 
 async function getPokemonTypeData(pokemon) {
   let typeNames = [];
   let typeIcons = [];
-
   for (let index = 0; index < pokemon.types.length; index++) {
     const typeName = pokemon.types[index].type.name;
     const typeUrl = pokemon.types[index].type.url;
     const typeData = await getTypeData(typeUrl);
-
-    const icon =
-      typeData?.sprites?.["generation-viii"]?.["sword-shield"]?.symbol_icon || "";
-
+    const icon = typeData?.sprites?.["generation-viii"]?.["sword-shield"]?.symbol_icon || "";
     typeNames.push(typeName);
     typeIcons.push(icon);
   }
-
   return {
     typeNames: typeNames,
     typeIcons: typeIcons,
@@ -123,7 +162,6 @@ async function getTypeData(typeUrl) {
   if (typeDataCache[typeUrl]) {
     return typeDataCache[typeUrl];
   }
-
   const typeData = await loadPokemonData(typeUrl);
   typeDataCache[typeUrl] = typeData;
   return typeData;
@@ -132,27 +170,9 @@ async function getTypeData(typeUrl) {
 async function updateTypeFilterOptions() {
   const typeFilterMenu = document.getElementById("type-filter-menu");
   const currentValue = document.getElementById("type-filter-trigger").dataset.value;
-
   const availableTypes = await getAvailableTypes();
 
-  let html = `
-    <button class="type-filter-option active-option" type="button" data-value="all">
-      <span>All Pokémon Types</span>
-    </button>
-  `;
-
-  for (let index = 0; index < availableTypes.length; index++) {
-    const type = availableTypes[index];
-
-    html += `
-      <button class="type-filter-option" type="button" data-value="${type.name}">
-        ${type.icon ? `<img class="type-filter-icon" src="${type.icon}" alt="${type.name}">` : ""}
-        <span>${capitalize(type.name)}</span>
-      </button>
-    `;
-  }
-
-  typeFilterMenu.innerHTML = html;
+  typeFilterMenu.innerHTML = renderTypeFilterOptions(availableTypes);
 
   const stillExists = availableTypes.some((type) => type.name === currentValue);
 
@@ -165,18 +185,13 @@ async function updateTypeFilterOptions() {
 
 async function getAvailableTypes() {
   const typeMap = new Map();
-
   for (let i = 0; i < loadedPokemonList.length; i++) {
     const pokemon = loadedPokemonList[i];
-
     for (let j = 0; j < pokemon.types.length; j++) {
       const typeName = pokemon.types[j].type.name;
       const typeUrl = pokemon.types[j].type.url;
       const typeData = await getTypeData(typeUrl);
-
-      const icon =
-        typeData?.sprites?.["generation-viii"]?.["sword-shield"]?.symbol_icon || "";
-
+      const icon = typeData?.sprites?.["generation-viii"]?.["sword-shield"]?.symbol_icon || "";
       if (!typeMap.has(typeName)) {
         typeMap.set(typeName, {
           name: typeName,
@@ -185,7 +200,6 @@ async function getAvailableTypes() {
       }
     }
   }
-
   return Array.from(typeMap.values()).sort((a, b) => a.name.localeCompare(b.name));
 }
 
@@ -193,23 +207,12 @@ function setTypeFilterValue(value) {
   const trigger = document.getElementById("type-filter-trigger");
   const typeFilterMenu = document.getElementById("type-filter-menu");
   const selectedOption = typeFilterMenu.querySelector(`[data-value="${value}"]`);
-
   trigger.dataset.value = value;
-
   if (value === "all" || !selectedOption) {
-    trigger.innerHTML = `
-      <span class="type-filter-label">All Pokémon Types</span>
-      <span class="type-filter-arrow">⌄</span>
-    `;
+    trigger.innerHTML = searchDefaultTypeFilterTriggerTemplate();
     return;
   }
-
-  trigger.innerHTML = `
-    <span class="type-filter-selected">
-      ${selectedOption.innerHTML}
-    </span>
-    <span class="type-filter-arrow">⌄</span>
-  `;
+  trigger.innerHTML = searchSelectedTypeFilterTriggerTemplate(selectedOption.innerHTML);
 }
 
 function renderTypeIcons(typeIcons, typeNames) {
@@ -233,30 +236,23 @@ function handleSearchInput(event) {
   const nextBtn = document.getElementById("next-btn");
   const allCards = document.querySelectorAll(".pokemon-card");
   const searchStatusRef = document.getElementById("search-status");
-
   searchStatusRef.innerHTML = "";
-
   if (searchValue.length === 0) {
     allCards.forEach((card) => {
       card.style.display = "flex";
     });
-
     nextBtn.style.display = "block";
     return;
   }
 
   nextBtn.style.display = "none";
-
   let hasMatch = false;
-
   allCards.forEach((card) => {
     const pokemonName = card.dataset.name;
     const pokemonId = card.dataset.id;
     const formattedId = pokemonId.padStart(3, "0");
-
     const matchesName = pokemonName.includes(searchValue);
     const matchesId = pokemonId.includes(searchValue) || formattedId.includes(searchValue);
-
     if (matchesName || matchesId) {
       card.style.display = "flex";
       hasMatch = true;
@@ -264,23 +260,19 @@ function handleSearchInput(event) {
       card.style.display = "none";
     }
   });
-
   if (!hasMatch) {
     searchStatusRef.innerHTML = noPokemonFoundTemplate(searchValue);
   }
 }
 
 function getVisiblePokemonIds() {
-  const visibleCards = Array.from(document.querySelectorAll(".pokemon-card"))
-    .filter((card) => card.style.display !== "none");
-
+  const visibleCards = Array.from(document.querySelectorAll(".pokemon-card")).filter((card) => card.style.display !== "none");
   return visibleCards.map((card) => Number(card.dataset.id));
 }
 
 function showPreviousPokemon() {
   const visiblePokemonIds = getVisiblePokemonIds();
   const currentIndex = visiblePokemonIds.indexOf(currentPokemonId);
-
   if (currentIndex > 0) {
     renderOverlay(visiblePokemonIds[currentIndex - 1]);
   }
@@ -289,7 +281,6 @@ function showPreviousPokemon() {
 function showNextPokemon() {
   const visiblePokemonIds = getVisiblePokemonIds();
   const currentIndex = visiblePokemonIds.indexOf(currentPokemonId);
-
   if (currentIndex !== -1 && currentIndex < visiblePokemonIds.length - 1) {
     renderOverlay(visiblePokemonIds[currentIndex + 1]);
   }
@@ -298,18 +289,14 @@ function showNextPokemon() {
 function updateNavigationButtons() {
   const prevBtn = document.querySelector(".nav-btn.prev");
   const nextBtn = document.querySelector(".nav-btn.next");
-
   if (!prevBtn || !nextBtn) return;
-
   const visiblePokemonIds = getVisiblePokemonIds();
   const currentIndex = visiblePokemonIds.indexOf(currentPokemonId);
-
   if (currentIndex <= 0) {
     prevBtn.classList.add("disabled");
   } else {
     prevBtn.classList.remove("disabled");
   }
-
   if (currentIndex === -1 || currentIndex >= visiblePokemonIds.length - 1) {
     nextBtn.classList.add("disabled");
   } else {
@@ -349,7 +336,6 @@ function formatStatName(statName) {
     "special-defense": "Sp. Def",
     speed: "Speed",
   };
-
   return statNames[statName] || capitalize(statName);
 }
 
