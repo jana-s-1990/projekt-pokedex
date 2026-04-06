@@ -7,12 +7,14 @@
     <link rel="stylesheet" href="style.css" />
     <link rel="stylesheet" href="styles/header.css" />
     <link rel="stylesheet" href="styles/overview.css" />
-    <link rel="stylesheet" href="styles/cards.css" />
+    <link rel="stylesheet" href="styles/no-find-filter.css" />
     <link rel="stylesheet" href="styles/types.css" />
     <link rel="stylesheet" href="styles/loading-spinner.css" />
     <link rel="stylesheet" href="styles/detail-card.css" />
 
+    <script src="scripts/functions.js"></script>
     <script src="scripts/template.js"></script>
+    <script src="scripts/render.js"></script>
     <script src="script.js"></script>
   </head>
   <body onload="init()">
@@ -32,22 +34,26 @@
         </div>
 
         <div class="filter-box">
-          <select class="filter-select">
-            <option>All Pokémon Types</option>
-            <option>Fire</option>
-            <option>Water</option>
-            <option>Grass</option>
-            <option>Electric</option>
-          </select>
+          <div class="type-filter" id="type-filter">
+            <button
+              id="type-filter-trigger"
+              class="type-filter-trigger"
+              type="button"
+              data-value="all"
+            >
+              <span class="type-filter-label">All Pokémon Types</span>
+              <span class="type-filter-arrow">⌄</span>
+            </button>
+
+            <div id="type-filter-menu" class="type-filter-menu d-none"></div>
+          </div>
         </div>
       </div>
     </header>
     <main class="content">
-      <section
-        id="pokemon-names-container"
-        class="pokemon-cards-wrapper"
-      ></section>
-      <button id="next-btn" class="load-more-btn">Lade nächtste Pokemon</button>
+      <section id="search-status"></section>
+      <section id="pokemon-overview-container" class="pokemon-cards-wrapper"></section>
+      <button id="next-btn" class="load-more-btn">Load next Pokémon</button>
     </main>
     <div id="pokemon-overlay" class="overlay d-none" onclick="closeOverlay()">
       <div class="overlay-content" onclick="event.stopPropagation()">
