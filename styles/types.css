@@ -103,3 +103,112 @@
     0 20px 40px rgba(0, 0, 0, 0.28),
     0 0 30px rgba(249, 85, 135, 0.22);
 }
+
+.pokemon-detail.type-normal {
+  background: linear-gradient(180deg, #b8b88a 0%, #9f9f72 100%);
+}
+
+.pokemon-detail.type-fire {
+  background: linear-gradient(180deg, #f59e42 0%, #ea580c 100%);
+}
+
+.pokemon-detail.type-water {
+  background: linear-gradient(180deg, #60a5fa 0%, #2563eb 100%);
+}
+
+.pokemon-detail.type-electric {
+  background: linear-gradient(180deg, #facc15 0%, #eab308 100%);
+}
+
+.pokemon-detail.type-grass {
+  background: linear-gradient(180deg, #7ccf5b 0%, #4d9f2a 100%);
+}
+
+.pokemon-detail.type-ice {
+  background: linear-gradient(180deg, #a5f3fc 0%, #67e8f9 100%);
+  color: #1e293b;
+}
+
+.pokemon-detail.type-fighting {
+  background: linear-gradient(180deg, #d94b45 0%, #a61b1b 100%);
+}
+
+.pokemon-detail.type-poison {
+  background: linear-gradient(180deg, #c084fc 0%, #9333ea 100%);
+}
+
+.pokemon-detail.type-ground {
+  background: linear-gradient(180deg, #e7c46b 0%, #c89b2b 100%);
+  color: #1e293b;
+}
+
+.pokemon-detail.type-flying {
+  background: linear-gradient(180deg, #a78bfa 0%, #7c3aed 100%);
+}
+
+.pokemon-detail.type-psychic {
+  background: linear-gradient(180deg, #fb7185 0%, #e11d48 100%);
+}
+
+.pokemon-detail.type-bug {
+  background: linear-gradient(180deg, #b7cf34 0%, #84a112 100%);
+}
+
+.pokemon-detail.type-rock {
+  background: linear-gradient(180deg, #c8b05a 0%, #9a7b1f 100%);
+}
+
+.pokemon-detail.type-ghost {
+  background: linear-gradient(180deg, #8b78c9 0%, #5b4296 100%);
+}
+
+.pokemon-detail.type-dragon {
+  background: linear-gradient(180deg, #7c5cff 0%, #4c1d95 100%);
+}
+
+.pokemon-detail.type-dark {
+  background: linear-gradient(180deg, #7a6557 0%, #4b3a30 100%);
+}
+
+.pokemon-detail.type-steel {
+  background: linear-gradient(180deg, #cbd5e1 0%, #94a3b8 100%);
+  color: #1e293b;
+}
+
+.pokemon-detail.type-fairy {
+  background: linear-gradient(180deg, #f0abcf 0%, #db2777 100%);
+}
+
+.pokemon-detail.type-ice .pokemon-name-detail,
+.pokemon-detail.type-ice .pokemon-number,
+.pokemon-detail.type-ice .tab-btn,
+.pokemon-detail.type-ice .stat-name,
+.pokemon-detail.type-ice .stat-value,
+.pokemon-detail.type-ice .evolution-name,
+.pokemon-detail.type-ice .evolution-id,
+.pokemon-detail.type-ground .pokemon-name-detail,
+.pokemon-detail.type-ground .pokemon-number,
+.pokemon-detail.type-ground .tab-btn,
+.pokemon-detail.type-ground .stat-name,
+.pokemon-detail.type-ground .stat-value,
+.pokemon-detail.type-ground .evolution-name,
+.pokemon-detail.type-ground .evolution-id,
+.pokemon-detail.type-steel .pokemon-name-detail,
+.pokemon-detail.type-steel .pokemon-number,
+.pokemon-detail.type-steel .tab-btn,
+.pokemon-detail.type-steel .stat-name,
+.pokemon-detail.type-steel .stat-value,
+.pokemon-detail.type-steel .evolution-name,
+.pokemon-detail.type-steel .evolution-id {
+  color: #1e293b;
+}
+
+.pokemon-detail.type-ice .close-btn,
+.pokemon-detail.type-ice .nav-btn,
+.pokemon-detail.type-ground .close-btn,
+.pokemon-detail.type-ground .nav-btn,
+.pokemon-detail.type-steel .close-btn,
+.pokemon-detail.type-steel .nav-btn {
+  color: #1e293b;
+  background: rgba(255, 255, 255, 0.35);
+}

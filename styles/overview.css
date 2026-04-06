@@ -23,7 +23,6 @@
   justify-content: space-between;
 }
 
-/* sanfter Hintergrundkreis */
 .pokemon-card::before {
   content: "";
   position: absolute;
@@ -36,7 +35,6 @@
   pointer-events: none;
 }
 
-/* leichtes Pokeball-Feeling */
 .pokemon-card::after {
   content: "";
   position: absolute;
