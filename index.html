@@ -18,6 +18,13 @@
     <script src="script.js"></script>
   </head>
   <body onload="init()">
+    <div id="loading-overlay" class="loading-overlay d-none">
+      <div class="loading-box">
+        <div class="pokeball-spinner"></div>
+        <h2>Loading Pokédex Data...</h2>
+        <p>Please wait a moment.</p>
+      </div>
+    </div>
     <header class="pokedex-header">
       <div>
         <h1 class="pokedex-title">Pokédex</h1>
@@ -57,7 +64,6 @@
     </main>
     <div id="pokemon-overlay" class="overlay d-none" onclick="closeOverlay()">
       <div class="overlay-content" onclick="event.stopPropagation()">
-        <button class="close-btn" onclick="closeOverlay()">✕</button>
         <div id="overlay-body"></div>
       </div>
     </div>

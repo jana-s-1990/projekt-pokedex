@@ -66,53 +66,67 @@ function noPokemonFoundTemplate(searchValue) {
 }
 
 function pokemonDetailTemplate(pokemon, pokemonName, firstType, typeNamesHtml, pokemonIdFormated) {
-    return /*html*/ `
-        <div class="pokemon-detail type-${firstType}">
-            <div class="detail-header">
-                <span class="pokemon-number">#${pokemonIdFormated}</span>
-                <h2 class="pokemon-name">${pokemonName}</h2>
-            </div>
-            <div class="detail-image-wrap">
-                <img class="detail-image" src="${pokemon.sprites.other.showdown.front_default}" alt="${pokemonName}">
-            </div>
-            <div class="detail-types">
-                ${typeNamesHtml}
-            </div>
-            <div class="tabs">
-                <button class="tab-btn active" onclick="switchTab(event, 'about')">About</button>
-                <button class="tab-btn" onclick="switchTab(event, 'stats')">Base Stats</button>
-                <button class="tab-btn" onclick="switchTab(event, 'moves')">Moves</button>
-                <button class="tab-btn" onclick="switchTab(event, 'evolution')">Evolution</button>
-            </div>
-            <div class="tab-content">
-                <div id="about" class="tab-pane active">
-                    ${renderAboutTab(pokemon)}
-                </div>
-                <div id="stats" class="tab-pane">
-                    ${renderStatsTab(pokemon)}
-                </div>
-                <div id="moves" class="tab-pane">
-                    <ul class='moves-list'>
-                        ${renderMovesTab(pokemon)}
-                    </ul>
-                </div>
-                <div id="evolution" class="tab-pane">
-                    ${renderEvolutionTab()}
-                </div>
-            </div>
-            <div class="detail-navigation">
-                <button class="nav-btn" onclick="showPreviousPokemon()">←</button>
-                <button class="nav-btn" onclick="showNextPokemon()">→</button>
-            </div>
+  return /*html*/ `
+    <div class="pokemon-detail type-${firstType}">
+      <div class="detail-top">
+        <div class="detail-header-row">
+            <span class="pokemon-number">#${pokemonIdFormated}</span>
+            <button class="close-btn" onclick="closeOverlay()">✕</button>
         </div>
-    `;
+
+        <h2 class="pokemon-name-detail">${pokemonName}</h2>
+
+        <div class="detail-types">
+            ${typeNamesHtml}
+        </div>
+
+        <div class="detail-image-wrap">
+            <img class="detail-image" src="${pokemon.sprites.other.showdown.front_default}" alt="${pokemonName}">
+        </div>
+    </div>
+
+      <div class="tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'about')">About</button>
+        <button class="tab-btn" onclick="switchTab(event, 'stats')">Base Stats</button>
+        <button class="tab-btn" onclick="switchTab(event, 'moves')">Moves</button>
+        <button class="tab-btn" onclick="switchTab(event, 'evolution')">Evolution</button>
+      </div>
+
+      <div class="tab-content">
+        <div id="about" class="tab-pane active">
+          ${renderAboutTab(pokemon)}
+        </div>
+
+        <div id="stats" class="tab-pane">
+          ${renderStatsTab(pokemon)}
+        </div>
+
+        <div id="moves" class="tab-pane">
+          <ul class="moves-list">
+            ${renderMovesTab(pokemon)}
+          </ul>
+        </div>
+
+        <div id="evolution" class="tab-pane">
+          ${renderEvolutionTab()}
+        </div>
+      </div>
+
+      <div class="detail-navigation">
+        <button class="nav-btn prev" onclick="showPreviousPokemon()">←</button>
+        <button class="nav-btn next" onclick="showNextPokemon()">→</button>
+      </div>
+    </div>
+  `;
 }
 
 function detailAboutTabTemplate(pokemon){
     return /*html*/`
-        <p><strong>Height:</strong> ${pokemon.height}</p>
-        <p><strong>Weight:</strong> ${pokemon.weight}</p>
-        <p><strong>Base Experience:</strong> ${pokemon.base_experience}</p>
+        <div class="detail-about">
+            <p><strong>Height:</strong> ${pokemon.height}</p>
+            <p><strong>Weight:</strong> ${pokemon.weight}</p>
+            <p><strong>Base Experience:</strong> ${pokemon.base_experience}</p>
+        </div>
     `;
 }
 

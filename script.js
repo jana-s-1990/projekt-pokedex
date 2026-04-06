@@ -105,13 +105,12 @@ async function renderEvolutionChain(evolutionNames) {
   let html = `<div class="evolution-chain">`;
 
   for (let i = 0; i < evolutionNames.length; i++) {
-    const pokemonData = await loadPokemonData(
-      `https://pokeapi.co/api/v2/pokemon/${evolutionNames[i]}`,
-    );
+    const pokemonData = await loadPokemonData(`https://pokeapi.co/api/v2/pokemon/${evolutionNames[i]}`);
     const pokemonName = capitalize(pokemonData.name);
+    const isCurrentPokemon = pokemonData.id === currentPokemonId;
 
     html += `
-      <div class="evolution-card" onclick="renderOverlay(${pokemonData.id})">
+      <div class="evolution-card ${isCurrentPokemon ? "active-evolution" : ""}">
         <img 
           class="evolution-image" 
           src="${pokemonData.sprites.other.home.front_default}" 
@@ -121,10 +120,6 @@ async function renderEvolutionChain(evolutionNames) {
         <span class="evolution-id">#${String(pokemonData.id).padStart(3, "0")}</span>
       </div>
     `;
-
-    if (i < evolutionNames.length - 1) {
-      html += `<div class="evolution-arrow">→</div>`;
-    }
   }
 
   html += `</div>`;

@@ -1,40 +1,49 @@
 async function renderPokemonOverview(url) {
   if (loadedPokemonCount >= POKEMON_LIMIT) return;
 
-  const pokemonArray = await loadPokemonData(url);
-  const pokemonOverviewConRef = document.getElementById("pokemon-overview-container");
+  showLoadingOverlay();
 
-  urlNextGlobal = pokemonArray.next;
+  try {
+    const pokemonArray = await loadPokemonData(url);
+    const pokemonOverviewConRef = document.getElementById("pokemon-overview-container");
 
-  const remaining = POKEMON_LIMIT - loadedPokemonCount;
-  const maxToLoad = Math.min(pokemonArray.results.length, remaining);
+    urlNextGlobal = pokemonArray.next;
+    urlPrevGlobal = pokemonArray.previous;
 
-  for (let index = 0; index < maxToLoad; index++) {
-    const pokemon = pokemonArray.results[index];
-    const pokemonData = await loadPokemonData(pokemon.url);
-    const pokemonName = capitalize(pokemonData.name);
-    const pokemonId = formatId(pokemonData.id);
-    const typeData = await getPokemonTypeData(pokemonData);
-    const firstType = typeData.typeNames[0];
-    const typeIconsHtml = renderTypeIcons(typeData.typeIcons, typeData.typeNames);
-    const typeNamesHtml = renderTypeNames(typeData.typeNames);
+    const remaining = POKEMON_LIMIT - loadedPokemonCount;
+    const maxToLoad = Math.min(pokemonArray.results.length, remaining);
 
-    loadedPokemonList.push(pokemonData);
+    for (let index = 0; index < maxToLoad; index++) {
+      const pokemon = pokemonArray.results[index];
+      const pokemonData = await loadPokemonData(pokemon.url);
 
-    pokemonOverviewConRef.innerHTML += pokemonOverviewTemplate(
-      pokemonName,
-      pokemonId,
-      pokemonData,
-      firstType,
-      typeIconsHtml,
-      typeNamesHtml,
-    );
+      loadedPokemonList.push(pokemonData);
 
-    loadedPokemonCount++;
+      const pokemonName = capitalize(pokemonData.name);
+      const pokemonId = formatId(pokemonData.id);
+      const typeData = await getPokemonTypeData(pokemonData);
+      const firstType = typeData.typeNames[0];
+      const typeIconsHtml = renderTypeIcons(typeData.typeIcons, typeData.typeNames);
+      const typeNamesHtml = renderTypeNames(typeData.typeNames);
+
+      pokemonOverviewConRef.innerHTML += pokemonOverviewTemplate(
+        pokemonName,
+        pokemonId,
+        pokemonData,
+        firstType,
+        typeIconsHtml,
+        typeNamesHtml
+      );
+
+      loadedPokemonCount++;
+    }
+
+    handleLoadMoreButton();
+    await updateTypeFilterOptions();
+    applyFilters();
+  } finally {
+    hideLoadingOverlay();
   }
-  handleLoadMoreButton();
-  await updateTypeFilterOptions();
-  applyFilters();
 }
 
 async function renderFilteredPokemonList(list) {
@@ -73,6 +82,7 @@ async function renderOverlay(pokemonId) {
   overlayRef.classList.remove("d-none");
   overlayBodyRef.innerHTML = pokemonDetailTemplate(pokemonData, pokemonName, firstType, typeNamesHtml, pokemonIdFormated);
 
+  updateNavigationButtons();
   await loadEvolutionChain(pokemonData);
 }
 
@@ -97,7 +107,7 @@ function renderStatsTab(pokemon) {
 
 function renderMovesTab(pokemon) {
   let html = "";
-  const moves = pokemon.moves.slice(0, 10);
+  const moves = pokemon.moves.slice(0, 6);
 
   for (let i = 0; i < moves.length; i++) {
     const moveName = moves[i].move.name;

@@ -28,6 +28,18 @@ function handleLoadMoreButton() {
   }
 }
 
+function showLoadingOverlay() {
+  const loadingOverlay = document.getElementById("loading-overlay");
+  loadingOverlay.classList.remove("d-none");
+  document.body.classList.add("no-scroll");
+}
+
+function hideLoadingOverlay() {
+  const loadingOverlay = document.getElementById("loading-overlay");
+  loadingOverlay.classList.add("d-none");
+  document.body.classList.remove("no-scroll");
+}
+
 function applyFilters() {
   const searchValue = document.querySelector(".search-input").value.toLowerCase().trim();
   const selectedType = document.getElementById("type-filter-trigger").dataset.value;
@@ -81,6 +93,7 @@ function applyFilters() {
     const infoText = searchValue || capitalize(selectedType);
     searchStatusRef.innerHTML = noPokemonFoundTemplate(infoText);
   }
+  updateNavigationButtons();
 }
 
 
@@ -257,14 +270,51 @@ function handleSearchInput(event) {
   }
 }
 
+function getVisiblePokemonIds() {
+  const visibleCards = Array.from(document.querySelectorAll(".pokemon-card"))
+    .filter((card) => card.style.display !== "none");
+
+  return visibleCards.map((card) => Number(card.dataset.id));
+}
+
 function showPreviousPokemon() {
-  if (currentPokemonId > 1) {
-    renderOverlay(currentPokemonId - 1);
+  const visiblePokemonIds = getVisiblePokemonIds();
+  const currentIndex = visiblePokemonIds.indexOf(currentPokemonId);
+
+  if (currentIndex > 0) {
+    renderOverlay(visiblePokemonIds[currentIndex - 1]);
   }
 }
 
 function showNextPokemon() {
-  renderOverlay(currentPokemonId + 1);
+  const visiblePokemonIds = getVisiblePokemonIds();
+  const currentIndex = visiblePokemonIds.indexOf(currentPokemonId);
+
+  if (currentIndex !== -1 && currentIndex < visiblePokemonIds.length - 1) {
+    renderOverlay(visiblePokemonIds[currentIndex + 1]);
+  }
+}
+
+function updateNavigationButtons() {
+  const prevBtn = document.querySelector(".nav-btn.prev");
+  const nextBtn = document.querySelector(".nav-btn.next");
+
+  if (!prevBtn || !nextBtn) return;
+
+  const visiblePokemonIds = getVisiblePokemonIds();
+  const currentIndex = visiblePokemonIds.indexOf(currentPokemonId);
+
+  if (currentIndex <= 0) {
+    prevBtn.classList.add("disabled");
+  } else {
+    prevBtn.classList.remove("disabled");
+  }
+
+  if (currentIndex === -1 || currentIndex >= visiblePokemonIds.length - 1) {
+    nextBtn.classList.add("disabled");
+  } else {
+    nextBtn.classList.remove("disabled");
+  }
 }
 
 function closeOverlay() {
