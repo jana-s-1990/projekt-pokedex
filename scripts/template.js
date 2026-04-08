@@ -56,7 +56,7 @@ function noPokemonFoundTemplate(searchValue) {
 function searchAllTypesOptionTemplate() {
   return `
     <button class="type-filter-option active-option" type="button" data-value="all">
-      <span>All Pokémon Types</span>
+      <span>All Loaded Types</span>
     </button>
   `;
 }
@@ -77,7 +77,7 @@ function searchTypeIconTemplate(type) {
 
 function searchDefaultTypeFilterTriggerTemplate() {
   return `
-    <span class="type-filter-label">All Pokémon Types</span>
+    <span class="type-filter-label">All Loaded Types</span>
     ${searchTypeFilterArrowTemplate()}
   `;
 }
@@ -111,6 +111,10 @@ function pokemonDetailTemplate(pokemon, pokemonName, firstType, typeNamesHtml, p
             <img class="detail-image" src="${pokemon.sprites.other.showdown.front_default}" alt="${pokemonName}">
         </div>
     </div>
+    <div class="detail-navigation">
+        <button class="nav-btn prev" onclick="showPreviousPokemon()">←</button>
+        <button class="nav-btn next" onclick="showNextPokemon()">→</button>
+      </div>
 
       <div class="tabs">
         <button class="tab-btn active" onclick="switchTab(event, 'about')">About</button>
@@ -137,11 +141,6 @@ function pokemonDetailTemplate(pokemon, pokemonName, firstType, typeNamesHtml, p
             </div>  
           </div>  
         </div>
-      </div>
-
-      <div class="detail-navigation">
-        <button class="nav-btn prev" onclick="showPreviousPokemon()">←</button>
-        <button class="nav-btn next" onclick="showNextPokemon()">→</button>
       </div>
     </div>
   `;
