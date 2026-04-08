@@ -76,16 +76,15 @@ function handleLoadMoreButton() {
   }
 }
 
-function showLoadingOverlay() {
+function toggleLoadingOverlay(show) {
   const loadingOverlay = document.getElementById("loading-overlay");
-  loadingOverlay.classList.remove("d-none");
-  document.body.classList.add("no-scroll");
-}
-
-function hideLoadingOverlay() {
-  const loadingOverlay = document.getElementById("loading-overlay");
-  loadingOverlay.classList.add("d-none");
-  document.body.classList.remove("no-scroll");
+  if (show) {
+    loadingOverlay.classList.remove("d-none");
+    document.body.classList.add("no-scroll");
+  } else {
+    loadingOverlay.classList.add("d-none");
+    document.body.classList.remove("no-scroll");
+  }
 }
 
 function applyFilters() {
@@ -189,7 +188,6 @@ function renderNoPokemonFound(filterData) {
   filterData.searchStatusRef.innerHTML = noPokemonFoundTemplate(infoText);
 }
 
-
 async function getPokemonTypeData(pokemon) {
   let typeNames = [];
   let typeIcons = [];
@@ -220,11 +218,8 @@ async function updateTypeFilterOptions() {
   const typeFilterMenu = document.getElementById("type-filter-menu");
   const currentValue = document.getElementById("type-filter-trigger").dataset.value;
   const availableTypes = await getAvailableTypes();
-
-  typeFilterMenu.innerHTML = renderTypeFilterOptions(availableTypes);
-
   const stillExists = availableTypes.some((type) => type.name === currentValue);
-
+  typeFilterMenu.innerHTML = renderTypeFilterOptions(availableTypes);
   if (currentValue === "all" || !stillExists) {
     setTypeFilterValue("all");
   } else {
@@ -281,37 +276,30 @@ function renderTypeNames(typeNames) {
 }
 
 function handleSearchInput(event) {
-  const searchValue = event.target.value.toLowerCase().trim();
+  const value = event.target.value.toLowerCase().trim();
+  const cards = document.querySelectorAll(".pokemon-card");
   const nextBtn = document.getElementById("next-btn");
-  const allCards = document.querySelectorAll(".pokemon-card");
-  const searchStatusRef = document.getElementById("search-status");
-  searchStatusRef.innerHTML = "";
-  if (searchValue.length === 0) {
-    allCards.forEach((card) => {
-      card.style.display = "flex";
-    });
-    nextBtn.style.display = "block";
-    return;
-  }
-
+  const status = document.getElementById("search-status");
+  status.innerHTML = "";
+  if (!value) return resetSearch(cards, nextBtn);
   nextBtn.style.display = "none";
+  if (!filterCards(cards, value)) status.innerHTML = noPokemonFoundTemplate(value);
+}
+
+function resetSearch(cards, nextBtn) {
+  cards.forEach(card => card.style.display = "flex");
+  nextBtn.style.display = "block";
+}
+
+function filterCards(cards, value) {
   let hasMatch = false;
-  allCards.forEach((card) => {
-    const pokemonName = card.dataset.name;
-    const pokemonId = card.dataset.id;
-    const formattedId = pokemonId.padStart(3, "0");
-    const matchesName = pokemonName.includes(searchValue);
-    const matchesId = pokemonId.includes(searchValue) || formattedId.includes(searchValue);
-    if (matchesName || matchesId) {
-      card.style.display = "flex";
-      hasMatch = true;
-    } else {
-      card.style.display = "none";
-    }
+  cards.forEach(card => {
+    const { name, id } = card.dataset;
+    const match = name.includes(value) || id.includes(value) || id.padStart(3, "0").includes(value);
+    card.style.display = match ? "flex" : "none";
+    if (match) hasMatch = true;
   });
-  if (!hasMatch) {
-    searchStatusRef.innerHTML = noPokemonFoundTemplate(searchValue);
-  }
+  return hasMatch;
 }
 
 function getVisiblePokemonIds() {

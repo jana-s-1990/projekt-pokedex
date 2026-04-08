@@ -1,6 +1,6 @@
 async function renderPokemonOverview(url) {
   if (loadedPokemonCount >= POKEMON_LIMIT) return;
-  showLoadingOverlay();
+  toggleLoadingOverlay(true);
   try {
     const pokemonArray = await loadPokemonData(url);
     const pokemonOverviewConRef = document.getElementById("pokemon-overview-container");
@@ -34,7 +34,7 @@ async function renderPokemonOverview(url) {
     await updateTypeFilterOptions();
     applyFilters();
   } finally {
-    hideLoadingOverlay();
+    toggleLoadingOverlay(false);
   }
 }
 
