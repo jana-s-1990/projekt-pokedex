@@ -64,6 +64,33 @@ async function loadPokemonData(url) {
   }
 }
 
+function preparePokemonListData(pokemonArray) {
+  urlNextGlobal = pokemonArray.next;
+  urlPrevGlobal = pokemonArray.previous;
+  const remaining = POKEMON_LIMIT - loadedPokemonCount;
+  return Math.min(pokemonArray.results.length, remaining);
+}
+
+async function preparePokemon(pokemon) {
+  const data = await loadPokemonData(pokemon.url);
+  const typeData = await getPokemonTypeData(data);
+  return {
+    data,
+    name: capitalize(data.name),
+    id: formatId(data.id),
+    firstType: typeData.typeNames[0],
+    typeIconsHtml: renderTypeIcons(typeData.typeIcons, typeData.typeNames),
+    typeNamesHtml: renderTypeNames(typeData.typeNames),
+    types: data.types.map(t => t.type.name).join(",")
+  };
+}
+
+async function finalizeRender() {
+  handleLoadMoreButton();
+  await updateTypeFilterOptions();
+  applyFilters();
+}
+
 function handleLoadMoreButton() {
   const nextBtn = document.getElementById("next-btn");
   if (!nextBtn) return;

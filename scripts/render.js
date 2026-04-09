@@ -4,38 +4,29 @@ async function renderPokemonOverview(url) {
   try {
     const pokemonArray = await loadPokemonData(url);
     const pokemonOverviewConRef = document.getElementById("pokemon-overview-container");
-    const remaining = POKEMON_LIMIT - loadedPokemonCount;
-    const maxToLoad = Math.min(pokemonArray.results.length, remaining);
-    urlNextGlobal = pokemonArray.next;
-    urlPrevGlobal = pokemonArray.previous;
+    const maxToLoad = preparePokemonListData(pokemonArray);
     for (let index = 0; index < maxToLoad; index++) {
-      const pokemon = pokemonArray.results[index];
-      const pokemonData = await loadPokemonData(pokemon.url);
-      const pokemonName = capitalize(pokemonData.name);
-      const pokemonId = formatId(pokemonData.id);
-      const typeData = await getPokemonTypeData(pokemonData);
-      const firstType = typeData.typeNames[0];
-      const typeIconsHtml = renderTypeIcons(typeData.typeIcons, typeData.typeNames);
-      const typeNamesHtml = renderTypeNames(typeData.typeNames);
-      const pokemonTypes = pokemonData.types.map((type) => type.type.name).join(",");
-      loadedPokemonList.push(pokemonData);
-      pokemonOverviewConRef.innerHTML += pokemonOverviewTemplate(
-        pokemonName,
-        pokemonId,
-        pokemonData,
-        firstType,
-        typeIconsHtml,
-        typeNamesHtml,
-        pokemonTypes
-      );
-      loadedPokemonCount++;
+      const pokemonObj = await preparePokemon(pokemonArray.results[index]);
+      renderPokemon(pokemonObj, pokemonOverviewConRef);
     }
-    handleLoadMoreButton();
-    await updateTypeFilterOptions();
-    applyFilters();
+    await finalizeRender();
   } finally {
     toggleLoadingOverlay(false);
   }
+}
+
+function renderPokemon(pokemonObj, container) {
+  container.innerHTML += pokemonOverviewTemplate(
+    pokemonObj.name,
+    pokemonObj.id,
+    pokemonObj.data,
+    pokemonObj.firstType,
+    pokemonObj.typeIconsHtml,
+    pokemonObj.typeNamesHtml,
+    pokemonObj.types
+  );
+  loadedPokemonList.push(pokemonObj.data);
+  loadedPokemonCount++;
 }
 
 function renderTypeFilterOptions(types) {
